@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>T1D Forecast — Research Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/lucide@0.383.0/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+<aside class="side">
+  <div class="brand"><i data-lucide="activity"></i><span>T1D FORECAST</span></div>
+  <nav id="nav">
+    <button data-view="overview" class="active"><i data-lucide="layout-dashboard"></i>Overview</button>
+    <button data-view="forecast"><i data-lucide="line-chart"></i>Glucose Forecast</button>
+    <button data-view="explorer"><i data-lucide="flask-conical"></i>Test Explorer</button>
+    <button data-view="clinical"><i data-lucide="stethoscope"></i>Clinical Analysis</button>
+    <button data-view="performance"><i data-lucide="gauge"></i>Performance</button>
+    <button data-view="model"><i data-lucide="network"></i>Model</button>
+  </nav>
+  <div class="picker">
+    <label>Patient<select class="sel-patient"></select></label>
+    <label>Test case<select class="sel-case"></select></label>
+  </div>
+  <span class="badge">Demo Data</span>
+</aside>
+
+<main>
+  <div class="banner"><i data-lucide="flask-conical"></i>Demo / Research Prototype / Mock Test Data. Not clinically validated. Not medical advice or insulin guidance.</div>
+
+  <section id="v-overview" class="view active">
+    <header><h1>T1D Glucose Forecasting &amp; Clinical Analytics</h1>
+    <p>Forecasts future glucose from historical physiological data (glucose, meals, insulin, heart rate, activity). Each view replays a held-out test case, so the true future glucose is available for comparison.</p></header>
+    <div class="grid4" id="summary"></div>
+    <div class="card"><h2>Actual vs predicted trajectory</h2><div class="chart"><canvas id="cMain"></canvas></div></div>
+    <div class="grid4" id="fcards"></div>
+    <div class="card"><h2>Status and interpretation</h2><p id="interp"></p></div>
+  </section>
+
+  <section id="v-forecast" class="view">
+    <header><h1>Glucose forecast</h1><p>History, current time and future for the selected test case. Shaded area marks the future region.</p></header>
+    <div class="card"><div class="chart tall"><canvas id="cDetail"></canvas></div></div>
+    <div class="card"><h2>Error by horizon</h2><table id="errTable"></table></div>
+  </section>
+
+  <section id="v-explorer" class="view">
+    <header><h1>Test explorer</h1><p>Select a predefined held-out sample. Values cannot be edited manually.</p></header>
+    <div class="card controls">
+      <label>Patient<select class="sel-patient"></select></label>
+      <label>Test case<select class="sel-case"></select></label>
+      <label>Horizon<select id="selH"><option value="30">30 min</option><option value="60" selected>60 min</option><option value="90">90 min</option><option value="120">120 min</option></select></label>
+      <button class="btn primary" id="run"><i data-lucide="play"></i>Run Forecast</button>
+      <button class="btn" id="rand"><i data-lucide="shuffle"></i>Random Test Case</button>
+    </div>
+    <div class="grid5" id="results"></div>
+    <div class="card"><h2>Physiological context</h2><p class="muted">Observational inputs available to the model for this window. Not treatment recommendations.</p>
+      <div class="grid5" id="ctx"></div><h3>Recent events</h3><ul id="events"></ul></div>
+  </section>
+
+  <section id="v-clinical" class="view">
+    <header><h1>Clinical analysis</h1><p>Research evaluation of prediction quality. Not clinical advice.</p></header>
+    <div class="card"><h2>Glucose range</h2><div id="range"></div><p id="rangeNote" class="muted"></p></div>
+    <div class="two">
+      <div class="card"><h2>Clarke error grid (demo points)</h2><div class="chart sq"><canvas id="cClarke"></canvas></div></div>
+      <div class="card"><h2>Zone distribution</h2><div id="zones"></div><p class="muted">Zones A and B are generally treated as clinically acceptable in the literature. Demo points only; selected case is outlined in cyan.</p></div>
+    </div>
+  </section>
+
+  <section id="v-performance" class="view">
+    <header><h1>Performance</h1><p>Placeholder metrics. Final values will come from actual experiments on the held-out test set.</p></header>
+    <div class="grid4" id="perfCards"></div>
+    <div class="two">
+      <div class="card"><h2>Horizon-wise performance</h2><table id="hTable"></table></div>
+      <div class="card"><h2>Error vs horizon</h2><div class="chart"><canvas id="cErr"></canvas></div></div>
+    </div>
+    <div class="card"><h2>Model comparison (placeholder)</h2><table id="mTable"></table></div>
+  </section>
+
+  <section id="v-model" class="view">
+    <header><h1>Model</h1><p>Planned pipeline. Component details will be filled in once models are trained.</p></header>
+    <div class="flow">
+      <div class="node">Historical physiological data</div><i data-lucide="arrow-down"></i>
+      <div class="node">Individual model components</div><i data-lucide="arrow-down"></i>
+      <div class="node accent">Ensemble</div><i data-lucide="arrow-down"></i>
+      <div class="node">Future glucose forecast</div>
+    </div>
+    <div class="grid5" id="modelCards"></div>
+  </section>
+</main>
+<script src="script.js"></script>
+</body>
+</html>
